@@ -1,0 +1,83 @@
+@orange: rgb(255, 145, 0);
+
+body {
+    nav {
+        position: fixed;
+        width: 100%;
+
+        #logo {
+            .fa-scroll {
+                color: white;
+                font-size: 1.7em;
+                margin: 0px 10px 0px 0px;
+                transform: rotate(90deg) scale(1.2, 1.7);
+            }
+
+            p {
+                color: @orange;
+                font-family: LucidaHW;
+                font-size: 2em;
+            }
+        }
+
+        #nav {
+            select {
+                width: 100px;
+            }
+
+            .btn {
+                background-color: whitesmoke;
+                height: 30px;
+                padding: 2px;
+                width: 40px;
+            }
+
+            .fas {
+                color: white;
+            }
+        }
+    }
+
+    #content {
+        padding-top: 80px;
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        td {
+            border: 0px;
+        }
+
+        .td_ref {
+            width: 10%;
+        }
+
+        .td_hebrew,
+        .td_greek,
+        .td_latin {
+            width: 30%;
+        }
+
+        .td_hebrew,
+        #id_txt_hebrew {
+            font-family: "Hebrew";
+            font-size: 16pt;
+            text-align: right;
+        }
+
+        .td_greek,
+        #id_txt_greek {
+            font-family: "Greek";
+            font-size: 15pt;
+            text-align: justify;
+        }
+
+        .td_latin,
+        #id_txt_latin {
+            font-family: 'Latin';
+            font-size: 12pt;
+            text-align: justify;
+        }
+    }
+}
