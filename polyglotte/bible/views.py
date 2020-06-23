@@ -18,7 +18,7 @@ class VersesList(generic.ListView):
 
     def get_queryset(self, **kwargs):
         queryset = Verse.objects.filter(
-            book=self.kwargs['book'], chapter=self.kwargs['chapter'])
+            book=self.kwargs['book'], chapter=self.kwargs['chapter']).order_by('verse')
         return queryset
 
     def get_context_data(self, ** kwargs):
