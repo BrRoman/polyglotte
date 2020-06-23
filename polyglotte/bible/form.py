@@ -26,4 +26,4 @@ class VerseForm(forms.ModelForm):
 
     class Meta:
         model = Verse
-        fields = ['txt_hebrew', 'txt_greek', 'txt_latin']
+        fields = '__all__'
