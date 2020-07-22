@@ -7,7 +7,7 @@ from .models import Verse
 
 class VerseForm(forms.ModelForm):
     """ Verse form. """
-    attrs_textarea = {'cols': 60, 'rows': 2}
+    attrs_textarea = {'cols': 60, 'rows': 7}
     txt_hebrew = forms.CharField(
         required=False,
         label='Hébreu :',
@@ -26,4 +26,4 @@ class VerseForm(forms.ModelForm):
 
     class Meta:
         model = Verse
-        fields = '__all__'
+        fields = ('txt_hebrew', 'txt_greek', 'txt_latin')
