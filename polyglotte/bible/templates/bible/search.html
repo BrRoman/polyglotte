@@ -1,0 +1,7 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% for verse in verses %}
+        {{ verse.txt_latin }}
+    {% endfor %}
+{% endblock content %}

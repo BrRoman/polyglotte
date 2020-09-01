@@ -38,7 +38,13 @@ class VersesList(generic.ListView):
         for item in verses:
             if not item['chapter'] in chapters:
                 chapters.append(item['chapter'])
-        context['chapters'] = chapters
+def search_view(request):
+    """ Returns a set of verses containing a string given in parameter. """
+    if request.method == 'POST':
+        verses = Verse.objects.filter(
+            txt_latin__icontains=request.POST['search'])[:20]
+
+    return render(request, 'bible/search.html', {'verses': verses})
 
         # Current book and chapter:
         context['current_book'] = self.kwargs['book']
