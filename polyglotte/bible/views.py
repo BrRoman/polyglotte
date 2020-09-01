@@ -9,37 +9,47 @@ from .form import VerseForm
 from .models import Verse
 
 
-class HomeView(generic.RedirectView):
-    def get_redirect_url(self):
-        return reverse('bible:list', args=['Gn', 1])
+def home(request):
+    """ Home view of Polyglotte: redirect to Gn 1. """
+    return redirect(reverse('bible:list', args=['Gn', 1]))
 
 
-class VersesList(generic.ListView):
-    template_name = 'bible/list.html'
-    model = Verse
+def verses_list(request, **kwargs):
+    """ Returns a list of verses. """
+    # Requested verses:
+    verses = Verse.objects.filter(
+        book=kwargs['book'], chapter=kwargs['chapter']).order_by('verse')
 
-    def get_queryset(self, **kwargs):
-        queryset = Verse.objects.filter(
-            book=self.kwargs['book'], chapter=self.kwargs['chapter']).order_by('verse')
-        return queryset
+    # Books:
+    books = ['Gn', 'Ex', 'Lev', 'Num', 'Dt',
+             'Jos', 'Jdc', 'Ru', '1 Reg', '2 Reg', '3 Reg', '4 Reg', '1 Par', '2 Par',
+             'Neh', 'Esd', 'Tb', 'Jdt', 'Est',
+             'Jb', 'Ps', 'Pr', 'Qo', 'Ct', 'Sap', 'Si',
+             'Is', 'Jer', 'Lam', 'Ba', 'Ez', 'Dn',
+             'Os', 'Jon', 'Am', 'Ab', 'Jl', 'Mi', 'Na', 'So', 'Ha', 'Ag', 'Za', 'Mal',
+             '1 Ma', '2 Ma',
+             'Mt', 'Mc', 'Lc', 'Jo', 'Ac',
+             'Rm', '1 Co', '2 Co', 'Ga', 'Ep', 'Ph', 'Col',
+             '1 Th', '2 Th', '1 Tim', '2 Tim', 'Tit', 'Phm', 'He',
+             'Jc', '1 Pe', '2 Pe', '1 Jo', '2 Jo', '3 Jo', 'Judæ', 'Ap']
 
-    def get_context_data(self, ** kwargs):
-        context = super().get_context_data(**kwargs)
+    # Chapters:
+    chapters = []
+    chapters_of_this_book = Verse.objects.filter(
+        book=kwargs['book']).values('chapter')
+    for item in chapters_of_this_book:
+        if not item['chapter'] in chapters:
+            chapters.append(item['chapter'])
 
-        # Books:
-        context['books'] = []
-        books = Verse.objects.values('book')
-        for item in books:
-            if not item['book'] in context['books']:
-                context['books'].append(item['book'])
+    return render(request, 'bible/list.html', {
+        'verses': verses,
+        'books': books,
+        'chapters': chapters,
+        'current_book': kwargs['book'],
+        'current_chapter': kwargs['chapter'],
+    })
 
-        # Chapters:
-        chapters = []
-        verses = Verse.objects.filter(
-            book=self.kwargs['book']).values('chapter')
-        for item in verses:
-            if not item['chapter'] in chapters:
-                chapters.append(item['chapter'])
+
 def search_view(request):
     """ Returns a set of verses containing a string given in parameter. """
     if request.method == 'POST':
@@ -48,23 +58,19 @@ def search_view(request):
 
     return render(request, 'bible/search.html', {'verses': verses})
 
-        # Current book and chapter:
-        context['current_book'] = self.kwargs['book']
-        context['current_chapter'] = self.kwargs['chapter']
-        return context
 
+def verse_update(request, **kwargs):
+    """ Form of verses. """
+    verse = get_object_or_404(
+        Verse, book=kwargs['book'], chapter=kwargs['chapter'], verse=kwargs['verse'])
 
-class VerseUpdate(generic.UpdateView):
-    model = Verse
-    form_class = VerseForm
-    template_name = 'bible/form.html'
+    if request.method == 'POST':
+        form_verse = VerseForm(request.POST, instance=verse)
+        if form_verse.is_valid:
+            form_verse.save()
+            return redirect(reverse('bible:list', kwargs={'book': kwargs['book'], 'chapter': kwargs['chapter']}))
 
-    def get_object(self):
-        params = self.kwargs
-        verse = Verse.objects.get(
-            book=params['book'], chapter=params['chapter'], verse=params['verse'])
-        return verse
+    else:
+        form_verse = VerseForm(instance=verse)
 
-    def form_valid(self, form):
-        form.save()
-        return redirect(reverse('bible:list', kwargs={'book': self.kwargs['book'], 'chapter': self.kwargs['chapter']}))
+    return render(request, 'bible/form.html', {'form': form_verse})

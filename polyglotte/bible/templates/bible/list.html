@@ -37,7 +37,7 @@
 
 {% block content %}
     <table class="table table-borderless">
-        {% for verse in object_list %}
+        {% for verse in verses %}
             <tr>
                 <td class="td_ref"><a href={% url 'bible:update' verse.book verse.chapter verse.verse%}>{{ verse.book }} {{ verse.chapter }}, {{ verse.verse }}</a></td>
                 <td class="td_hebrew">{{ verse.txt_hebrew|default_if_none:"" }}</td>
