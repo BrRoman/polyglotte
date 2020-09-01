@@ -1,5 +1,7 @@
+""" bible/views.py """
+
 from django import forms
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 
