@@ -1,9 +1,7 @@
 """ bible/views.py """
 
-from django import forms
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.views import generic
 
 from .form import VerseForm
 from .models import Verse
@@ -50,15 +48,6 @@ def verses_list(request, **kwargs):
     })
 
 
-def search_view(request):
-    """ Returns a set of verses containing a string given in parameter. """
-    if request.method == 'POST':
-        verses = Verse.objects.filter(
-            txt_latin__icontains=request.POST['search'])[:20]
-
-    return render(request, 'bible/search.html', {'verses': verses})
-
-
 def verse_update(request, **kwargs):
     """ Form of verses. """
     verse = get_object_or_404(
@@ -68,9 +57,28 @@ def verse_update(request, **kwargs):
         form_verse = VerseForm(request.POST, instance=verse)
         if form_verse.is_valid:
             form_verse.save()
-            return redirect(reverse('bible:list', kwargs={'book': kwargs['book'], 'chapter': kwargs['chapter']}))
+            return redirect(reverse('bible:list',
+                                    kwargs={'book': kwargs['book'], 'chapter': kwargs['chapter']}))
 
     else:
         form_verse = VerseForm(instance=verse)
 
     return render(request, 'bible/form.html', {'form': form_verse})
+
+
+def search(request):
+    """ Returns a set of verses containing a pattern. """
+    if request.method == 'GET':
+        if request.GET:
+            verses = Verse.objects.filter(
+                txt_latin__icontains=request.GET['pattern'])
+            count = len(verses)
+            verses = verses[:100]
+
+            return render(request, 'bible/search.html', {
+                'verses': verses,
+                'count': count,
+                'pattern': request.GET['pattern'],
+            })
+
+    return render(request, 'bible/search.html')

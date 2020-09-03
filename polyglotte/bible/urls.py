@@ -10,5 +10,5 @@ urlpatterns = [
     path('<str:book>/<int:chapter>', views.verses_list, name='list'),
     path('<str:book>/<int:chapter>/<int:verse>',
          views.verse_update, name='update'),
-    path('search', views.search_view, name='search'),
+    path('search', views.search, name='search'),
 ]

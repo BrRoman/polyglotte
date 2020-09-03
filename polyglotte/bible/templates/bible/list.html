@@ -21,17 +21,7 @@
         <span id="next_chapter" class="fas fa-angle-right" title="Chapitre suivant"></span>
 
         <!-- Search -->
-        <form action="{% url 'bible:search' %}" method="post">
-            {% csrf_token %}
-            <input
-                id="search"
-                name="search"
-                type="text"
-                placeholder="Rechercher"
-                {% if search != '' %}value={{ search }}{% endif %}
-            >
-            <script>window.onload = document.getElementById('search').select();</script>
-        </form>
+        <a href={% url 'bible:search' %}><span class="fas fa-search ml-3" title="Rechercher un texte"></span></a>
     </div>
 {% endblock nav %}
 
