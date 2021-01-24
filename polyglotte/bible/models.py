@@ -1,8 +1,10 @@
+""" bible/models.py """
 from django.urls import reverse
 from django.db import models
 
 
 class Verse(models.Model):
+    """ Verse model. """
     book = models.CharField(max_length=10)
     chapter = models.IntegerField()
     verse = models.IntegerField()
@@ -15,4 +17,12 @@ class Verse(models.Model):
         db_table = 'Verse'
 
     def get_absolute_url(self):
-        return reverse('bible:update', kwargs={'book': self.book, 'chapter': self.chapter, 'verse': self.verse})
+        """ Return absolute url of a verse. """
+        return reverse(
+            'bible:update',
+            kwargs={
+                'book': self.book,
+                'chapter': self.chapter,
+                'verse': self.verse
+            }
+        )
